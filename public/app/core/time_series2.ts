@@ -106,6 +106,7 @@ export default class TimeSeries {
     var nullAsZero = fillStyle === 'null as zero';
     var currentTime;
     var currentValue;
+    var lastValue = null;
     var nonNulls = 0;
 
     for (var i = 0; i < this.datapoints.length; i++) {
@@ -133,6 +134,7 @@ export default class TimeSeries {
         if (currentValue < this.stats.min) {
           this.stats.min = currentValue;
         }
+        lastValue = currentValue;
       }
 
       if (currentValue !== 0) {
@@ -151,10 +153,7 @@ export default class TimeSeries {
 
     if (result.length) {
       this.stats.avg = (this.stats.total / nonNulls);
-      this.stats.current = result[result.length-1][1];
-      if (this.stats.current === null && result.length > 1) {
-        this.stats.current = result[result.length-2][1];
-      }
+      this.stats.current = lastValue;
     }
 
     this.stats.count = result.length;
